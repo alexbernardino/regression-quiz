@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { questions } from '../app/questions.ts';
 test('question bank is complete, distinct and excludes the separate module',()=>{
-  assert.equal(questions.length,16);
+  assert.equal(questions.length,19);
   assert.equal(new Set(questions.map(q=>q.prompt)).size,questions.length);
   for(const q of questions) {
     assert.equal(q.options.length,4);

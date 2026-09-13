@@ -1,6 +1,6 @@
 # Regression Quiz
 
-A standalone, browser-only formative quiz in the style of KNN Quiz. Sixteen questions cover ordinary least squares, query residuals, noise, influential observations, training/test evaluation, R², parameter space, Gauss–Markov, covariance ellipses and consistency. No regularization questions.
+A standalone, browser-only formative quiz in the style of KNN Quiz. Nineteen questions cover ordinary least squares, query residuals, noise, centering, identifiability, influential observations, training/test evaluation, R², parameter space, Gauss–Markov, covariance ellipses and parameter/prediction variance. No regularization questions.
 
 Each answer immediately reveals feedback and a suggested experiment in [Regression Interactive](https://alexbernardino.github.io/regression-interactive/). Answers lock after selection; students can review or restart. Scores stay in memory and reset on reload; nothing is submitted or stored on a server.
 
@@ -32,4 +32,4 @@ The workflow supplies the repository base path. Local Pages builds default to /r
 
 Edit app/questions.ts. Each question has four options and a zero-based answer index (0–3), an explanation, an experiment, and a section. Update the question-count assertion in tests/questions.test.mjs if you change the total.
 
-The content uses the requested regression topics, not a verified copy of the course slides. Review terminology against your lectures before assigning. The Gauss–Markov questions distinguish its finite-sample BLUE guarantee from consistency and from exact confidence-region coverage. Theory checked against Purdue STAT512 Chapter 3: https://www.stat.purdue.edu/~fmliang/STAT512/lect3.pdf
+The content has been checked against the supplied 2_Linear_Regression.tex lecture. This remains a demo-focused companion, not a comprehensive assessment of multiple-output, polynomial, RBF or kernel regression. Centering and exact rank deficiency are lecture-based thought experiments; the quiz does not claim the demo has controls for them. It uses β₀ for intercept, β₁ for slope and Σβ for parameter covariance. The formal consistency question was replaced with an intuitive parameter-variance question. Gauss–Markov's covariance guarantee is distinguished from exact Gaussian confidence-region coverage. Additional theory reference: https://www.stat.purdue.edu/~fmliang/STAT512/lect3.pdf

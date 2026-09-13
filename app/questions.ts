@@ -8,7 +8,7 @@ export const questions: Question[] = [
   {
     "section": "Fitting",
     "category": "Least squares",
-    "prompt": "What does ordinary least squares minimize? ",
+    "prompt": "What does ordinary least squares (OLS) minimize?",
     "options": [
       "The sum of squared vertical residuals on training points",
       "The distances from the estimate to the ground truth parameters",
@@ -16,7 +16,7 @@ export const questions: Question[] = [
       "The perpendicular distances to the line"
     ],
     "answer": 0,
-    "explanation": "A residual is the observed y minus the predicted y at the same x. Ordinary least squares chooses slope and intercept to minimize the sum of their squares on the training set.",
+    "explanation": "A residual is the observed y minus the predicted y at the same x. OLS chooses intercept β₀ and slope β₁ in ŷ = β₀ + β₁x to minimize the sum of squared errors (SSE) on the training set.",
     "experiment": "Add a training point far above the line and watch the fit move toward it."
   },
   {
@@ -60,6 +60,24 @@ export const questions: Question[] = [
     "answer": 1,
     "explanation": "A point far from the training x mean has high leverage. If it is also inconsistent with the current line, its squared residual can pull the least-squares solution substantially.",
     "experiment": "Add a training point far to the right and away from the line, then delete it and compare."
+  },
+  {
+    "section": "Fitting",
+    "category": "Centering",
+    "prompt": "If both training x and training y are centered by subtracting their sample means, what is the OLS intercept in the centered coordinates?",
+    "options": ["The original intercept β₀", "Zero", "The fitted slope β₁", "It cannot be determined even with a full-rank design"],
+    "answer": 1,
+    "explanation": "With an intercept included and a full-rank design, β̂₀ = ȳ − β̂₁x̄. Both centered sample means are zero, so the centered intercept is zero; the slope is unchanged. Merely choosing a sampling range centered on zero does not exactly center a finite sample.",
+    "experiment": "Use the lecture's centering exercise: subtract the actual training means from every x and y. The demo has no exact sample-centering button; setting the generating intercept to zero is not the same operation."
+  },
+  {
+    "section": "Fitting",
+    "category": "Identifiability",
+    "prompt": "If all training inputs equal the same value c, can OLS uniquely determine both β₀ and β₁?",
+    "options": ["Yes, if there are at least two observations", "Yes, if the noise is Gaussian", "No; the observations identify only the combination β₀ + cβ₁", "Yes, because test data supply the missing equation"],
+    "answer": 2,
+    "explanation": "The columns 1 and x of the design matrix are dependent, so XᵀX is singular. Many slope–intercept pairs give the same fitted value at c. More observations at that same x do not resolve the ambiguity.",
+    "experiment": "In the lecture's normal equations, replace every x by c. In the demo, narrow the x range to approach this situation and observe slope instability; the interface may prevent an exactly zero-width range."
   },
   {
     "section": "Performance",
@@ -128,7 +146,7 @@ export const questions: Question[] = [
       "One noise sample"
     ],
     "answer": 0,
-    "explanation": "Each slope–intercept pair specifies a line y = slope × x + intercept. The estimate and ground truth correspond to fitted and generating lines, respectively.",
+    "explanation": "Each pair specifies a line y = β₀ + β₁x. The horizontal axis is slope β₁ and the vertical axis is intercept β₀; the lecture writes the parameter vector in the opposite order, (β₀, β₁). The estimate and ground truth correspond to fitted and generating lines.",
     "experiment": "Resample training data and follow the estimate in parameter space and its corresponding fitted line. Use Fit axes if needed."
   },
   {
@@ -148,7 +166,7 @@ export const questions: Question[] = [
   {
     "section": "Parameter space",
     "category": "Gauss–Markov assumptions",
-    "prompt": "Which conditions support the classical OLS BLUE guarantee, conditional on the training x values?",
+    "prompt": "Which conditions make OLS a Best Linear Unbiased Estimator (BLUE), treating the training design X as fixed?",
     "options": [
       "Gaussian errors alone, even with a wrong mean model",
       "A correct linear mean, full-rank design, zero-mean errors, equal finite error variance and uncorrelated errors",
@@ -156,13 +174,13 @@ export const questions: Question[] = [
       "Zero noise and identical x values"
     ],
     "answer": 1,
-    "explanation": "The theorem requires a correctly specified linear mean, identifiable parameters and errors with zero conditional mean and covariance σ²I. Gaussianity is not required for BLUE. Equal x values make slope and intercept unidentifiable.",
+    "explanation": "As in the lecture, y = Xβ + w, with known full-column-rank X, E[w] = 0 and Cov(w) = σ²I. Then E[β̂] = β and Σβ = Cov(β̂) = σ²(XᵀX)⁻¹. Gaussian noise is not required for BLUE. For random X, use the corresponding assumptions conditional on X.",
     "experiment": "Start with zero outliers and a nonzero x range. Contrast this clean model with contaminated data; the demo illustrates assumptions rather than proving them."
   },
   {
     "section": "Parameter space",
     "category": "What “best” means",
-    "prompt": "Gauss–Markov says OLS is BLUE. What does “best” mean here?",
+    "prompt": "Gauss–Markov says OLS is a Best Linear Unbiased Estimator (BLUE). What does “best” mean here?",
     "options": [
       "Smallest error on every individual dataset",
       "Highest test R² among all possible methods",
@@ -170,7 +188,7 @@ export const questions: Question[] = [
       "The estimate always equals the ground truth"
     ],
     "answer": 2,
-    "explanation": "The comparison is within linear unbiased estimators, for a fixed full-rank design. No such competitor has smaller variance for any chosen parameter combination. This is not a guarantee of the closest estimate on a particular sample.",
+    "explanation": "For another linear unbiased estimator β̃ = Py, Cov(β̃) − Σβ is positive semidefinite. Thus no such competitor has smaller variance for any chosen linear combination of parameters. This compares sampling covariance at fixed X, not errors on one particular sample.",
     "experiment": "Repeat training resamples in the clean model. Even with the theorem's guarantee, some fitted estimates will be far from the truth."
   },
   {
@@ -195,10 +213,10 @@ export const questions: Question[] = [
       "Because it forces the slope to zero",
       "Because test data enter the fit",
       "Because increasing x eliminates all noise",
-      "Because Var(slope estimate | X) = σ² / Σ(xᵢ − x̄)²"
+      "Because greater x spread reduces the variance of the estimated slope β̂₁"
     ],
     "answer": 3,
-    "explanation": "More spread increases the denominator and decreases slope variance. This describes uncertainty across samples under the model, not guaranteed improvement of every realized estimate.",
+    "explanation": "In one-feature regression, the lecture's matrix covariance gives Var(β̂₁ | X) = σ² / Σ(xᵢ − x̄)². More x spread increases the denominator and reduces slope variance. This is an implication of Σβ, not a guarantee of improvement on every realized sample.",
     "experiment": "Keep the sample count and noise fixed, use zero outliers, and compare x ranges [−1, 1] and [−5, 5]. Watch slope uncertainty."
   },
   {
@@ -212,13 +230,13 @@ export const questions: Question[] = [
       "Their covariance is always positive"
     ],
     "answer": 1,
-    "explanation": "For y = ax + b, Cov(â, b̂ | X) = −x̄σ² / Σ(xᵢ − x̄)². This trade-off tilts the ellipse. Centering the training x values at zero makes the covariance zero under the model.",
+    "explanation": "For y = β₀ + β₁x, the lecture's matrix formula implies Cov(β̂₁, β̂₀ | X) = −x̄σ² / Σ(xᵢ − x̄)². This trade-off tilts the ellipse. Exact centering of the training x values makes this covariance zero under the model.",
     "experiment": "Compare a range centered near zero with a range entirely on the positive side. Check ellipse tilt and remember the finite-sample x mean need not equal the range midpoint."
   },
   {
     "section": "Parameter space",
-    "category": "More data and consistency",
-    "prompt": "With a correctly specified model and a stable, nondegenerate x distribution, what should happen as the training size grows?",
+    "category": "More data and parameter variance",
+    "prompt": "In the clean linear model, what typically happens across training resamples when you collect more points from the same informative x distribution?",
     "options": [
       "Each new point must improve test R²",
       "The estimate is exactly correct after a fixed number of samples",
@@ -226,8 +244,16 @@ export const questions: Question[] = [
       "The observation noise itself disappears"
     ],
     "answer": 2,
-    "explanation": "With independent zero-mean finite-variance errors and an informative design as the sample grows, OLS is consistent and its parameter variance decreases. Gauss–Markov's finite-sample BLUE statement alone is not a consistency theorem. Observation noise remains.",
+    "explanation": "More informative training data typically reduce parameter covariance Σβ, so the fitted slope and intercept vary less across repeated training samples. A particular new sample need not be closer to the truth, and the observation noise itself does not disappear.",
     "experiment": "With zero outliers and the same noise and x range, compare many training resamples at small and large sample sizes."
+  },
+  {
+    "section": "Parameter space",
+    "category": "Prediction location",
+    "prompt": "Under the clean linear model, where is the fitted prediction ŷ(x₀) least variable across training-noise realizations at fixed training x values?",
+    "options": ["At the training x mean x̄", "As far from the training points as possible", "At every x equally", "Always at x₀ = 0, regardless of the training mean"],
+    "answer": 0,
+    "explanation": "The lecture's prediction-variance formula becomes Var(ŷ(x₀) | X) = σ²[1/n + (x₀ − x̄)² / Σ(xᵢ − x̄)²]. It is smallest at x̄ and grows with distance from it. Predicting a new noisy observation adds another σ² to the error variance; this formula describes uncertainty in the fitted mean.",
+    "experiment": "Use zero outliers. Keep a query near the center of the x range and resample training data repeatedly; then repeat with a fixed query farther away. Compare prediction fluctuations, not just one residual. The demo also redraws training x, so this illustrates rather than isolates the fixed-X formula."
   }
 ];
-
