@@ -73,7 +73,7 @@ export const questions: Question[] = [
   {
     "section": "Fitting",
     "category": "Identifiability",
-    "prompt": "If all training inputs equal the same value c, can OLS uniquely determine both β₀ and β₁?",
+    "prompt": "If all training x values equal the same constant c, can OLS uniquely determine both β₀ and β₁?",
     "options": ["Yes, if there are at least two observations", "Yes, if the noise is Gaussian", "No; the observations identify only the combination β₀ + cβ₁", "Yes, because test data supply the missing equation"],
     "answer": 2,
     "explanation": "The columns 1 and x of the design matrix are dependent, so XᵀX is singular. Many slope–intercept pairs give the same fitted value at c. More observations at that same x do not resolve the ambiguity.",
@@ -222,7 +222,7 @@ export const questions: Question[] = [
   {
     "section": "Parameter space",
     "category": "Ellipse tilt",
-    "prompt": "For positive training mean x̄, how are slope and intercept estimation errors related in the clean model?",
+    "prompt": "Under the Demo setup conditions, how are slope and intercept estimation errors related when the training mean x̄ is positive?",
     "options": [
       "They must be identical",
       "They have negative covariance: an increased slope can be offset by a decreased intercept",
@@ -236,7 +236,7 @@ export const questions: Question[] = [
   {
     "section": "Parameter space",
     "category": "More data and parameter variance",
-    "prompt": "In the clean linear model, what typically happens across training resamples when you collect more points from the same informative x distribution?",
+    "prompt": "Under the Demo setup conditions, what typically happens across training resamples as you collect more points from the same informative x distribution?",
     "options": [
       "Each new point must improve test R²",
       "The estimate is exactly correct after a fixed number of samples",
@@ -250,7 +250,7 @@ export const questions: Question[] = [
   {
     "section": "Parameter space",
     "category": "Prediction location",
-    "prompt": "Under the clean linear model, where is the fitted prediction ŷ(x₀) least variable across training-noise realizations at fixed training x values?",
+    "prompt": "Under the Demo setup conditions, where is ŷ(x₀) least variable across noise realizations at fixed training x values?",
     "options": ["At the training x mean x̄", "As far from the training points as possible", "At every x equally", "Always at x₀ = 0, regardless of the training mean"],
     "answer": 0,
     "explanation": "The lecture's prediction-variance formula becomes Var(ŷ(x₀) | X) = σ²[1/n + (x₀ − x̄)² / Σ(xᵢ − x̄)²]. It is smallest at x̄ and grows with distance from it. Predicting a new noisy observation adds another σ² to the error variance; this formula describes uncertainty in the fitted mean.",
