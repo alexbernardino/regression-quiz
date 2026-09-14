@@ -28,7 +28,13 @@ Expected address after successful deployment: https://alexbernardino.github.io/r
 
 The workflow supplies the repository base path. Local Pages builds default to /regression-quiz. No cloud server or API keys are needed.
 
-## Editing questions
+## Student QR code
+
+Scan or download [the quiz QR code](public/regression-quiz-qr.png) to open https://alexbernardino.github.io/regression-quiz/.
+
+![Regression Quiz QR code](public/regression-quiz-qr.png)
+
+## Editing the question bank
 
 Edit app/questions.ts. Each question has four options and a zero-based answer index (0–3), an explanation, an experiment, and a section. Update the question-count assertion in tests/questions.test.mjs if you change the total.
 
